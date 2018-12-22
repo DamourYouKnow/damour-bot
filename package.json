@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/DamourYouKnow/damour-bot/issues"
   },
-  "homepage": "https://github.com/DamourYouKnow/damour-bot#readme"
+  "homepage": "https://github.com/DamourYouKnow/damour-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
 }
