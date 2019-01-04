@@ -16,10 +16,13 @@ client.on('guildMemberAdd', member => {
     }
 });
 
-function welcome(username) {
-    
-}
-
+client.on('message', message => {
+    if (message.content == "!welcome") {
+        let username = message.author.username;
+        message.channel.send(
+                choice(messages).replace("{user}", `**${username}**`));
+    }
+});
 
 readJson('auth.json', (err, auth) => {
     readJson('messages.json', (err2, data) => {
