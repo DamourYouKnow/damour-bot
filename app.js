@@ -1,8 +1,14 @@
 var Discord = require('discord.js');
 var fs = require('fs');
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
 var client = new Discord.Client();
 var welcomes = [];
+var goodbyes = [];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
@@ -17,20 +23,22 @@ client.on('guildMemberAdd', member => {
 });
 
 client.on('message', message => {
+    let username = message.author.username;
     if (message.content == "!welcome") {
-        let username = message.author.username;
         message.channel.send(
-                choice(welcomes).replace("{user}", `**${username}**`));
+                choice(welcomes).replaceAll("{user}", `**${username}**`));
+    }
+    if (message.content == "!goodbye") {
+        message.channel.send(
+                choice(goodbyes).replaceAll("{user}", `**${username}**`));
     }
 });
 
 readJson('auth.json', (err, auth) => {
-    readJson('welcomes.json', (err2, data) => {
-        welcomes = data;
-        client.login(auth.token);
-    });
+    client.login(auth.token);
 });
-
+readJson('welcomes.json', (err, data) => { welcomes = data });
+readJson('goodbyes.json', (err, data) => { goodbyes = data });
 
 function readJson(filename, callback) {
     fs.readFile(filename, 'utf8', function(err, data) {
