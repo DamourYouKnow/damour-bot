@@ -9,6 +9,7 @@ String.prototype.replaceAll = function(search, replacement) {
 var client = new Discord.Client();
 var welcomes = [];
 var goodbyes = [];
+var recent = {};
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
@@ -18,7 +19,23 @@ client.on('guildMemberAdd', member => {
     let channel = member.guild.channels.find(ch => ch.name == 'general');
     let username = member.user.username;
     if (channel) {
-        channel.send(choice(welcomes).replace("{user}", `**${username}**`));   
+        channel.send(choice(welcomes).replaceAll("{user}", `**${username}**`));   
+    }
+    recent[member.id] = new Date();
+    setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
+});
+
+client.on('guildMemberRemove', member => {
+    if (member.id in recent) {
+        let username = member.user.username;
+        let channel = member.guild.channels.find(ch => ch.name == 'general');
+        let delta = new Date(new Date() - recent[member.id]);
+        let minutes = delta.getMinutes();
+        let seconds = delta.getSeconds();
+        let msg = choice(goodbyes).replaceAll("{user}", `**${username}**`);
+        msg += "\n\n";
+        msg += `They departed after ${minutes} minutes and ${seconds} seconds.`;
+        channel.send(msg);   
     }
 });
 
