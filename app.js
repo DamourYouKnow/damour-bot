@@ -11,6 +11,26 @@ var welcomes = [];
 var goodbyes = [];
 var recent = {};
 
+class Commands {
+    constructor() {
+        this.commands = { };
+    }
+
+    add(command, handler) {
+        this.commands[command] = handler;
+    }
+
+    exists(command) {
+        return command in this.commands;
+    }
+
+    execute(command, message) {
+        this.commands[command](message);
+    }
+}
+
+var commands = new Commands();
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
 });
@@ -39,15 +59,22 @@ client.on('guildMemberRemove', member => {
     }
 });
 
-client.on('message', message => {
+commands.add('welcome', message => {
     let username = message.author.username;
-    if (message.content == "!welcome") {
-        message.channel.send(
-                choice(welcomes).replaceAll("{user}", `**${username}**`));
-    }
-    if (message.content == "!goodbye") {
-        message.channel.send(
-                choice(goodbyes).replaceAll("{user}", `**${username}**`));
+    message.channel.send(
+            choice(welcomes).replaceAll("{user}", `**${username}**`));
+});
+
+commands.add('goodbye', message => {
+    let username = message.author.username;
+    message.channel.send(
+            choice(goodbyes).replaceAll("{user}", `**${username}**`));
+});
+
+client.on('message', message => {
+    if (message.content.startsWith("!")) {
+        let command = message.content.substring(1).split(" ")[0];
+        if (commands.exists(command)) commands.execute(command, message);
     }
 });
 
