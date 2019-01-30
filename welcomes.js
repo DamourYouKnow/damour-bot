@@ -1,4 +1,4 @@
-[
+module.exports = [
     "{user} joined the server. UmiYays in the chat!",
     "{user} joined the server today - cake and ice cream are on its way!",
     "{user} should listen to HERE I AM from Re:CREATORS",
@@ -30,4 +30,4 @@
     "What you're seeing now is my normal state.\nThis is a super {user}. And this.\nThis is what is known as a super {user} that has ascended above a super {user}.\nOr, you could just call this a super {user} two.",
     "And in conclusion, we have found {user}DB to be an excellent database for our website. Any questions?",
     "●●●{user} is typing..."
-]
+];

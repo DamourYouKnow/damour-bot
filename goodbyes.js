@@ -1,4 +1,4 @@
-[
+module.exports = [
     "{user} has left the server.",
     "You know what I heard about {user}?\n{user} likes spiders.\nIcky, wriggly, hairy, ugly spiders!\nThat's why they left the server.",
     ":crab: {user} IS GONE! :crab:",
@@ -16,4 +16,4 @@
     "From: {user}\nTo: servers[n-1]\nSubject: Please remove me from this mailing list",
     "{user} got thrown in the saarlac pit.",
     "{user} FLEW TO JAPAN TO SING ABBA IN A BIG COLD RIVER"
-]
+];

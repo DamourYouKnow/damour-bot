@@ -1,5 +1,7 @@
 var Discord = require('discord.js');
 var fs = require('fs');
+var welcomes = require('./welcomes.js');
+var goodbyes = require('./goodbyes.js')
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
@@ -7,8 +9,6 @@ String.prototype.replaceAll = function(search, replacement) {
 };
 
 var client = new Discord.Client();
-var welcomes = [];
-var goodbyes = [];
 var recent = {};
 
 class Commands {
@@ -81,8 +81,6 @@ client.on('message', message => {
 readJson('auth.json', (err, auth) => {
     client.login(auth.token);
 });
-readJson('welcomes.json', (err, data) => { welcomes = data });
-readJson('goodbyes.json', (err, data) => { goodbyes = data });
 
 function readJson(filename, callback) {
     fs.readFile(filename, 'utf8', function(err, data) {
