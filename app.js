@@ -17,15 +17,20 @@ class Commands {
     }
 
     add(command, handler) {
-        this.commands[command] = handler;
+        this.commands[command.name] = handler;
+        if (command.aliases) {
+            for (let alias of command.aliases) {
+                this.commands[alias] = handler;
+            }
+        }
     }
 
     exists(command) {
         return command in this.commands;
     }
 
-    execute(command, message) {
-        this.commands[command](message);
+    execute(command, message, args=[]) {
+        this.commands[command](message, args);
     }
 }
 
@@ -59,22 +64,76 @@ client.on('guildMemberRemove', member => {
     }
 });
 
-commands.add('welcome', message => {
+commands.add({'name': "welcome"}, message => {
     let username = message.author.username;
     message.channel.send(
             choice(welcomes).replaceAll("{user}", `**${username}**`));
 });
 
-commands.add('goodbye', message => {
+commands.add({'name': "goodbye"}, message => {
     let username = message.author.username;
     message.channel.send(
             choice(goodbyes).replaceAll("{user}", `**${username}**`));
 });
 
+commands.add({'name': "color", 'aliases': ["colour"]}, (message, args) => {
+    let member = message.member;
+
+    if (!member) {
+        message.channel.send("Command not executed in guild context.");
+        return;       
+    }
+
+    if (!args[0]) {
+        message.channel.send("You need to specify a color.");
+        return;
+    }
+
+    let roles = message.guild.roles.array();
+    let colorRoles = roles.filter(role => role.name.startsWith("color."));
+    let colors = colorRoles.map(role => role.name.split(".")[1]);
+
+    let found = colors.includes(args[0]);
+    if (!found) {
+        message.channel.send("Color role does not exist.");
+        return;
+    }
+
+    let colorRole = colorRoles.find(role => role.name == "color." + args[0])
+
+    if (!colorRole) {
+        message.channel.send(`Color role color.${args[0]} does not exist.`);
+        return;     
+    }
+
+    // Remove existing color roles if one exists.
+    let userRoles = member.roles.array();
+    let exists = userRoles.filter(role => role.name.startsWith("color."));
+    let rem = exists.map(role => role.id);
+    member.removeRoles(rem, "Removed color").then(function() {
+        // Add new color role.
+        member.addRole(colorRole.id, "Added color").then(function() {
+            message.channel.send(`Assigned color ${args[0]}.`);
+        }); 
+    });
+});
+
+commands.add({'name': "colors", 'aliases': ["colours"]}, (message, args) => {
+    let roles = message.guild.roles.array();
+    let colorRoles = roles.filter(role => role.name.startsWith("color."));
+    let lines = colorRoles.map(role => {
+        return `${role.name.split(".")[1]} - <@&${role.id}>` 
+    });
+    message.channel.send(`**__Colors available:__**\n${lines.join("\n")}`);
+});
+
 client.on('message', message => {
     if (message.content.startsWith("!")) {
         let command = message.content.substring(1).split(" ")[0];
-        if (commands.exists(command)) commands.execute(command, message);
+        if (commands.exists(command)) {
+            let args = message.content.split(' ').slice(1);
+            commands.execute(command, message, args);
+        }
     }
 });
 

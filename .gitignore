@@ -1,5 +1,7 @@
 auth.json
 
+/.vscode/
+
 # Logs
 logs
 *.log
