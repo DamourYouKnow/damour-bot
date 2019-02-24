@@ -173,8 +173,8 @@ function choice(array) {
 }
 
 function timeStr(time) {
-    let minutes = time.getMinutes().toString().padEnd(2, "0");
-    let seconds = time.getSeconds().toString().padEnd(2, "0");
+    let minutes = time.getMinutes().toString().padStart(2, "0");
+    let seconds = time.getSeconds().toString().padStart(2, "0");
     let milliseconds = time.getMilliseconds().toString().padEnd(3, "0");
     return `${minutes}:${seconds}.${milliseconds}`;
 }
