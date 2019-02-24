@@ -34,6 +34,28 @@ class Commands {
     }
 }
 
+class Timer {
+    constructor() {
+        this.startTime = null;
+        this.endTime = null;
+    }
+
+    start() {
+        this.startTime = new Date();
+        this.endTime = null;
+        return this;
+    }
+
+    end() {
+        this.endTime = new Date();
+        return this.result();
+    }
+
+    result() {
+        return new Date(this.endTime - this.startTime);
+    }
+}
+
 var commands = new Commands();
 
 client.on('ready', () => {
@@ -46,7 +68,7 @@ client.on('guildMemberAdd', member => {
     if (channel) {
         channel.send(choice(welcomes).replaceAll("{user}", `**${username}**`));   
     }
-    recent[member.id] = new Date();
+    recent[member.id] = new Timer().start();
     setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
 });
 
@@ -54,12 +76,10 @@ client.on('guildMemberRemove', member => {
     if (member.id in recent) {
         let username = member.user.username;
         let channel = member.guild.channels.find(ch => ch.name == 'general');
-        let delta = new Date(new Date() - recent[member.id]);
-        let minutes = delta.getMinutes();
-        let seconds = delta.getSeconds();
+        let time = timeStr(recent[member.id].end());
         let msg = choice(goodbyes).replaceAll("{user}", `**${username}**`);
         msg += "\n\n";
-        msg += `They departed after ${minutes} minutes and ${seconds} seconds.`;
+        msg += `They departed after \`${time}\`.`;
         channel.send(msg);   
     }
 });
@@ -150,4 +170,11 @@ function readJson(filename, callback) {
 
 function choice(array) {
     return array[Math.floor(Math.random() * array.length)];
+}
+
+function timeStr(time) {
+    let minutes = time.getMinutes().toString().padEnd(2, "0");
+    let seconds = time.getSeconds().toString().padEnd(2, "0");
+    let milliseconds = time.getMilliseconds().toString().padEnd(3, "0");
+    return `${minutes}:${seconds}.${milliseconds}`;
 }
