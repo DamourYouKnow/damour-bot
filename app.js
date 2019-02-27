@@ -78,6 +78,11 @@ client.on('guildMemberAdd', member => {
             setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
         }
     }
+
+    if (config.joinRole) {
+        member.addRole(
+                member.guild.roles.find(role => role.name == config.joinRole));
+    }
 });
 
 client.on('guildMemberRemove', member => {

@@ -2,10 +2,10 @@
 commandPrefix: "!"
 
 # Channel for welcome messages. Use null to disable welcome messages.
-welcomeChannel: "general" 
+welcomeChannel: "test_chamber" 
 
 # Channel for goodbye messages. Use null to disable goodbye messages.
-goodbyeChannel: "general"
+goodbyeChannel: "test_chamber"
 
 # Role to assign new guild members. Use null to assign no role.
 joinRole: "member"
