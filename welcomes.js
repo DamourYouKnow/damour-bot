@@ -21,7 +21,7 @@ module.exports = [
     "Dear {user}, I wrote you, but you still ain't calling.",
     "Ah, {user}, just the person I've been looking for. Please make a roast beef and a turkey.",
     "Ah {user}, welcome. I hope you have prepared for an unforgettable luncheon!",
-    "The {user}bus is comin' and everybody's jumpin'",
+    "The {user} bus is comin' and everybody's jumpin'",
     "This welcome message sucks, can {user} think of a better one?",
     "servers[n-1].add_member('{user}');",
     "WHAT? That's not {user}. That's some person from like Attack on Titan or whatever.",
@@ -29,5 +29,9 @@ module.exports = [
     "{user} into the {user}verse",
     "What you're seeing now is my normal state.\nThis is a super {user}. And this.\nThis is what is known as a super {user} that has ascended above a super {user}.\nOr, you could just call this a super {user} two.",
     "And in conclusion, we have found {user}DB to be an excellent database for our website. Any questions?",
-    "●●●{user} is typing..."
+    "●●●{user} is typing...",
+    "Right before your eyes\nWatch us multiply\nCome to claim our rights\nIts {user}",
+    "Guess who's back?\nBack again\n{user}'s back\nTell a friend",
+    "Bokolo P, Esshi, Chokyoshi, Futitsukeshi, {user}! Amazing new server members from all across Discord.",
+    "Hello Everyone, I’m Scott, President of Domino’s Pizza! Have you heard of {user}? Today I'd like to announce a new collaborative project featuring {user}: Domino's App featuring {user}!"
 ];
