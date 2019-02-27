@@ -1,15 +1,13 @@
 var Discord = require('discord.js');
 var fs = require('fs');
 var welcomes = require('./welcomes.js');
-var goodbyes = require('./goodbyes.js')
+var goodbyes = require('./goodbyes.js');
+var yaml = require('js-yaml');
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
 };
-
-var client = new Discord.Client();
-var recent = {};
 
 class Commands {
     constructor() {
@@ -56,31 +54,45 @@ class Timer {
     }
 }
 
+var client = new Discord.Client();
+var recent = {};
 var commands = new Commands();
+var config = yaml.safeLoad(fs.readFileSync("config.yml"));
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
 });
 
 client.on('guildMemberAdd', member => {
-    let channel = member.guild.channels.find(ch => ch.name == 'general');
-    let username = member.user.username;
-    if (channel) {
-        channel.send(choice(welcomes).replaceAll("{user}", `**${username}**`));   
+    if (config.welcomeChannel) {
+        // Post welcome message.
+        let channel = member.guild.channels.find(
+                ch => ch.name == config.welcomeChannel);
+        let username = member.user.username;
+        if (channel) {
+            channel.send(
+                    choice(welcomes).replaceAll("{user}", `**${username}**`)); 
+              
+            // Set timeout for goodbye message.
+            recent[member.id] = new Timer().start();
+            setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
+        }
     }
-    recent[member.id] = new Timer().start();
-    setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
 });
 
 client.on('guildMemberRemove', member => {
     if (member.id in recent) {
         let username = member.user.username;
-        let channel = member.guild.channels.find(ch => ch.name == 'general');
-        let time = timeStr(recent[member.id].end());
-        let msg = choice(goodbyes).replaceAll("{user}", `**${username}**`);
-        msg += "\n\n";
-        msg += `They departed after \`${time}\`.`;
-        channel.send(msg);   
+        let channel = member.guild.channels.find(
+                ch => ch.name == config.goodbyeChannel);
+        
+        if (channel) {
+            let time = timeStr(recent[member.id].end());
+            let msg = choice(goodbyes).replaceAll("{user}", `**${username}**`);
+            msg += "\n\n";
+            msg += `They departed after \`${time}\`.`;
+            channel.send(msg);
+        }   
     }
 });
 
@@ -110,8 +122,11 @@ commands.add({'name': "color", 'aliases': ["colour"]}, (message, args) => {
     }
 
     let roles = message.guild.roles.array();
-    let colorRoles = roles.filter(role => role.name.startsWith("color."));
-    let colors = colorRoles.map(role => role.name.split(".")[1]);
+
+    let colorRoles = roles.filter(
+            role => role.name.startsWith(config.colorPrefix));
+
+    let colors = colorRoles.map(role => role.name.split(config.colorPrefix)[1]);
 
     let found = colors.includes(args[0]);
     if (!found) {
@@ -119,16 +134,19 @@ commands.add({'name': "color", 'aliases': ["colour"]}, (message, args) => {
         return;
     }
 
-    let colorRole = colorRoles.find(role => role.name == "color." + args[0])
+    let colorRole = colorRoles.find(
+            role => role.name == config.colorPrefix + args[0])
 
     if (!colorRole) {
-        message.channel.send(`Color role color.${args[0]} does not exist.`);
+        message.channel.send(
+                `Color role ${config.colorPrefix}${args[0]} does not exist.`);
         return;     
     }
 
     // Remove existing color roles if one exists.
     let userRoles = member.roles.array();
-    let exists = userRoles.filter(role => role.name.startsWith("color."));
+    let exists = userRoles.filter(
+            role => role.name.startsWith(config.colorPrefix));
     let rem = exists.map(role => role.id);
     member.removeRoles(rem, "Removed color").then(function() {
         // Add new color role.
@@ -140,16 +158,18 @@ commands.add({'name': "color", 'aliases': ["colour"]}, (message, args) => {
 
 commands.add({'name': "colors", 'aliases': ["colours"]}, (message, args) => {
     let roles = message.guild.roles.array();
-    let colorRoles = roles.filter(role => role.name.startsWith("color."));
+    let colorRoles = roles.filter(
+            role => role.name.startsWith(config.colorPrefix));
     let lines = colorRoles.map(role => {
-        return `${role.name.split(".")[1]} - <@&${role.id}>` 
+        return `${role.name.split(config.colorPrefix)[1]} - <@&${role.id}>` 
     });
     message.channel.send(`**__Colors available:__**\n${lines.join("\n")}`);
 });
 
 client.on('message', message => {
-    if (message.content.startsWith("!")) {
-        let command = message.content.substring(1).split(" ")[0];
+    if (message.content.startsWith(config.commandPrefix)) {
+        let command = message.content.substring(config.commandPrefix.length)
+                .split(" ")[0];
         if (commands.exists(command)) {
             let args = message.content.split(' ').slice(1);
             commands.execute(command, message, args);

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DamourYouKnow/damour-bot#readme",
   "dependencies": {
-    "discord.js": "^11.4.2"
+    "discord.js": "^11.4.2",
+    "js-yaml": "^3.12.2"
   }
 }
