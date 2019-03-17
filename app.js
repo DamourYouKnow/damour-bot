@@ -91,6 +91,7 @@ function sendWelcome(channel, member) {
     let embed = new Discord.RichEmbed();
     embed.setTitle("New member!");
     embed.setThumbnail(member.avatarURL);
+    embed.setColor(0x3380ff);
     embed.setDescription(
             choice(welcomes).replaceAll("{user}", `**${username}**`));
     channel.send({embed}); 
@@ -105,6 +106,7 @@ function sendGoodbye(channel, member, postTime) {
     let embed = new Discord.RichEmbed();
     embed.setTitle("Member left");
     embed.setThumbnail(member.avatarURL);
+    embed.setColor(0xff9633);
     embed.setDescription(
             choice(goodbyes).replaceAll("{user}", `**${username}**`));
 
