@@ -5,13 +5,12 @@ Provides custom server join/leave messages for Discord. That's it.
 ## Features
 
 - Posts a random welcome message in #general when a user joins.
-- Posts a random goodbye message in #general if a user leaves withing 10 
-minutes of joining.
+- Posts a random goodbye message in #general if a user leaves.
 - Allows users to self assign color roles with the role prefix `color.`.
 
 ## Usage
 
-### Welcome and goodvye messages
+### Welcome and goodbye messages
 
 This thing runs on Node.js. You just need to do the `npm install` thing 
 and then you can run it with `node app.js`.
