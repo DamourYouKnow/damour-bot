@@ -128,7 +128,12 @@ commands.add({'name': "goodbye"}, message => {
     sendGoodbye(message.channel, message.author, true);
 });
 
-commands.add({'name': "color", 'aliases': ["colour"]}, (message, args) => {
+if (config.colorPrefix) {
+    commands.add({'name': "color", 'aliases': ["colour"]}, cmdColor);
+    commands.add({'name': "colors", 'aliases': ["colours"]}, cmdColors);
+}
+
+function cmdColor(message, args) {
     let member = message.member;
 
     if (!member) {
@@ -174,17 +179,17 @@ commands.add({'name': "color", 'aliases': ["colour"]}, (message, args) => {
             message.channel.send(`Assigned color ${args[0]}.`);
         }); 
     });
-});
+}
 
-commands.add({'name': "colors", 'aliases': ["colours"]}, (message, args) => {
+function cmdColors(message) {
     let roles = message.guild.roles.array();
     let colorRoles = roles.filter(
             role => role.name.startsWith(config.colorPrefix));
     let lines = colorRoles.map(role => {
         return `${role.name.split(config.colorPrefix)[1]} - <@&${role.id}>` 
     });
-    message.channel.send(`**__Colors available:__**\n${lines.join("\n")}`);
-});
+    message.channel.send(`**__Colors available:__**\n${lines.join("\n")}`); 
+}
 
 client.on('message', message => {
     if (message.content.startsWith(config.commandPrefix)) {
