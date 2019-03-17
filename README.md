@@ -1,12 +1,6 @@
 # damour-bot
 
-Provides custom server join/leave messages for Discord. That's it.
-
-## Features
-
-- Posts a random welcome message in #general when a user joins.
-- Posts a random goodbye message in #general if a user leaves.
-- Allows users to self assign color roles with the role prefix `color.`.
+Provides custom server join/leave messages for Discord and some other stuff.
 
 ## Usage
 
@@ -20,6 +14,12 @@ in `config.yml` or you can add an `auth.json` file with the following object:
     "token": "<YOUR TOKEN HERE>"
 }
 ```
+
+## Features
+
+- Posts a random welcome message in #general when a user joins.
+- Posts a random goodbye message in #general if a user leaves.
+- Allows users to self assign color roles with the role prefix `color.`.
 
 ### Welcome and goodbye messages
 
@@ -40,6 +40,10 @@ Here are some examples:
 ```js
 "Let's all give {user} a warm welcome!"
 ```
+
+### Server join role assignment
+
+Adds a role to a member when they join a server.
 
 ### Color management
 
