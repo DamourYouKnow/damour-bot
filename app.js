@@ -68,7 +68,7 @@ client.on('guildMemberAdd', member => {
         // Post welcome message.
         let channel = member.guild.channels.find(
                 ch => ch.name == config.welcomeChannel);
-        if (channel) sendWelcome(channel, member);
+        if (channel) sendWelcome(channel, member.user);
     }
 
     if (config.joinRole) {
@@ -82,37 +82,37 @@ client.on('guildMemberRemove', member => {
         let channel = member.guild.channels.find(
             ch => ch.name == config.goodbyeChannel);
 
-        if (channel) sendGoodbye(channel, member, true);
+        if (channel) sendGoodbye(channel, member.user, true);
     }
 });
 
-function sendWelcome(channel, member) {
-    let username = member.username;
+function sendWelcome(channel, user) {
+    let username = user.username;
     let embed = new Discord.RichEmbed();
     embed.setTitle("New member!");
-    embed.setThumbnail(member.avatarURL);
+    embed.setThumbnail(user.avatarURL);
     embed.setColor(0x3380ff);
     embed.setDescription(
             choice(welcomes).replaceAll("{user}", `**${username}**`));
     channel.send({embed}); 
     
     // Set timeout for goodbye message.
-    recent[member.id] = new Timer().start();
-    setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
+    recent[user.id] = new Timer().start();
+    setTimeout(() => {delete recent[user.id];} , 1000 * 60 * 10);
 }
 
-function sendGoodbye(channel, member, postTime) {
-    let username = member.username;
+function sendGoodbye(channel, user, postTime) {
+    let username = user.username;
     let embed = new Discord.RichEmbed();
     embed.setTitle("Member left");
-    embed.setThumbnail(member.avatarURL);
+    embed.setThumbnail(user.avatarURL);
     embed.setColor(0xff9633);
     embed.setDescription(
             choice(goodbyes).replaceAll("{user}", `**${username}**`));
 
     let ttl;
-    if (member.id in recent) {
-        let time = timeStr(recent[member.id].end());
+    if (user.id in recent) {
+        let time = timeStr(recent[user.id].end());
         ttl = `They departed after ${time}`;
     }  
     if (ttl && postTime) embed.setFooter(ttl);
