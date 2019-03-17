@@ -197,9 +197,18 @@ client.on('message', message => {
     }
 });
 
-readJson('auth.json', (err, auth) => {
-    client.login(auth.token);
-});
+
+if (config.token) {
+    client.login(config.token);
+} else {
+    readJson('auth.json', (err, auth) => {
+        if (err) {
+            console.log("No token provided in config.yml or auth.json");
+        } else {
+            client.login(auth.token);
+        }
+    });
+}
 
 function readJson(filename, callback) {
     fs.readFile(filename, 'utf8', function(err, data) {

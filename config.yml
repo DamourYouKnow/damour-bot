@@ -1,3 +1,7 @@
+# Authentication token for the bot application:
+# If null, the "token" property of auth.json will be used.
+token: null
+
 # Command prefix
 commandPrefix: "!"
 
@@ -10,5 +14,5 @@ goodbyeChannel: "general"
 # Role to assign new guild members. Use null to assign no role.
 joinRole: "member"
 
-# Prefix to designate color roles.
+# Prefix to designate color roles. Use null to disable the colors feature.
 colorPrefix: "color."
