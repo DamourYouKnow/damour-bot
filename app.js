@@ -68,15 +68,7 @@ client.on('guildMemberAdd', member => {
         // Post welcome message.
         let channel = member.guild.channels.find(
                 ch => ch.name == config.welcomeChannel);
-        let username = member.user.username;
-        if (channel) {
-            channel.send(
-                    choice(welcomes).replaceAll("{user}", `**${username}**`)); 
-              
-            // Set timeout for goodbye message.
-            recent[member.id] = new Timer().start();
-            setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
-        }
+        if (channel) sendWelcome(channel, member);
     }
 
     if (config.joinRole) {
@@ -86,31 +78,52 @@ client.on('guildMemberAdd', member => {
 });
 
 client.on('guildMemberRemove', member => {
-    if (member.id in recent) {
-        let username = member.user.username;
+    if (config.goodbyeChannel) {
         let channel = member.guild.channels.find(
-                ch => ch.name == config.goodbyeChannel);
-        
-        if (channel) {
-            let time = timeStr(recent[member.id].end());
-            let msg = choice(goodbyes).replaceAll("{user}", `**${username}**`);
-            msg += "\n\n";
-            msg += `They departed after \`${time}\`.`;
-            channel.send(msg);
-        }   
+            ch => ch.name == config.goodbyeChannel);
+
+        if (channel) sendGoodbye(channel, member, true);
     }
 });
 
-commands.add({'name': "welcome"}, message => {
-    let username = message.author.username;
-    message.channel.send(
+function sendWelcome(channel, member) {
+    let username = member.username;
+    let embed = new Discord.RichEmbed();
+    embed.setTitle("New member!");
+    embed.setThumbnail(member.avatarURL);
+    embed.setDescription(
             choice(welcomes).replaceAll("{user}", `**${username}**`));
+    channel.send({embed}); 
+    
+    // Set timeout for goodbye message.
+    recent[member.id] = new Timer().start();
+    setTimeout(() => {delete recent[member.id];} , 1000 * 60 * 10);
+}
+
+function sendGoodbye(channel, member, postTime) {
+    let username = member.username;
+    let embed = new Discord.RichEmbed();
+    embed.setTitle("Member left");
+    embed.setThumbnail(member.avatarURL);
+    embed.setDescription(
+            choice(goodbyes).replaceAll("{user}", `**${username}**`));
+
+    let ttl;
+    if (member.id in recent) {
+        let time = timeStr(recent[member.id].end());
+        ttl = `They departed after ${time}`;
+    }  
+    if (ttl && postTime) embed.setFooter(ttl);
+
+    channel.send({embed});
+}
+
+commands.add({'name': "welcome"}, message => {
+    sendWelcome(message.channel, message.author);
 });
 
 commands.add({'name': "goodbye"}, message => {
-    let username = message.author.username;
-    message.channel.send(
-            choice(goodbyes).replaceAll("{user}", `**${username}**`));
+    sendGoodbye(message.channel, message.author, true);
 });
 
 commands.add({'name': "color", 'aliases': ["colour"]}, (message, args) => {
