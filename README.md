@@ -10,10 +10,18 @@ Provides custom server join/leave messages for Discord. That's it.
 
 ## Usage
 
-### Welcome and goodbye messages
-
 This thing runs on Node.js. You just need to do the `npm install` thing 
 and then you can run it with `node app.js`.
+
+For authenticating your application you can either specify the `token` property 
+in `config.yml` or you can add an `auth.json` file with the following object:
+```json
+{
+    "token": "<YOUR TOKEN HERE>"
+}
+```
+
+### Welcome and goodbye messages
 
 Custom welcome and goodbye messages are defined in `welcomes.js` and 
 `goodbyes.js` respectively. Custom messages must meet the following 
