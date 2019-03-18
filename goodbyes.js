@@ -14,7 +14,7 @@ module.exports = [
     "{user} got thrown in the saarlac pit.",
     "{user} FLEW TO JAPAN TO SING [ABBA IN A BIG COLD RIVER](https://www.youtube.com/watch?v=kewXtkGmDtw)",
     "{user} missed the event cutoff.",
-    "{user} is out like a light\n(like a light)\nlike a light",
+    "{user} is out like a light\n([like a light](https://youtu.be/YEo-2daJJno?t=101))\nlike a light",
     "I don't like you {user}. Nothing personal, kid. But you must leave now.",
     "{user} got ran over by a [tunnel cart](https://carleton.ca/ehs/programs/operational-health-safety/tunnel-carts/).",
     "Why my {user} not working lol"
