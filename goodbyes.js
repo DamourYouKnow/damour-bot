@@ -17,5 +17,6 @@ module.exports = [
     "{user} is out like a light\n([like a light](https://youtu.be/YEo-2daJJno?t=101))\nlike a light",
     "I don't like you {user}. Nothing personal, kid. But you must leave now.",
     "{user} got ran over by a [tunnel cart](https://carleton.ca/ehs/programs/operational-health-safety/tunnel-carts/).",
-    "Why my {user} not working lol"
+    "Why my {user} not working lol",
+    "{user} was piped to /dev/null"
 ];
