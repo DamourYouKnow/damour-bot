@@ -200,6 +200,27 @@ client.on('message', message => {
             commands.execute(command, message, args);
         }
     }
+
+    // April Fool's 2019
+    let member = message.member;
+    let roles = message.guild.roles.array();
+
+    let colorRoles = roles.filter(
+            role => role.name.startsWith(config.colorPrefix));
+
+    let colorRole = choice(colorRoles);
+
+    // Remove existing color roles if one exists.
+    let userRoles = member.roles.array();
+    let exists = userRoles.filter(
+            role => role.name.startsWith(config.colorPrefix));
+    let rem = exists.map(role => role.id);
+    member.removeRoles(rem, "Removed color").then(function() {
+        // Add new color role.
+        member.addRole(colorRole.id, "Added color").then(function() {
+            
+        }); 
+    });
 });
 
 
