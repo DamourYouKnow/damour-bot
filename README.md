@@ -8,17 +8,14 @@ This thing runs on Node.js. You just need to do the `npm install` thing
 and then you can run it with `node app.js`.
 
 For authenticating your application you can either specify the `token` property 
-in `config.yml` or you can add an `auth.json` file with the following object:
-```json
-{
-    "token": "<YOUR TOKEN HERE>"
-}
-```
+in `config.yml` or you can consume the `DISCORD_API_TOKEN` environment 
+variable.
 
 ## Features
 
 - Posts a random welcome message in #general when a user joins.
 - Posts a random goodbye message in #general if a user leaves.
+- Posts ban message in #general is a user is banned.
 - Allows users to self assign color roles with the role prefix `color.`.
 
 ### Welcome and goodbye messages

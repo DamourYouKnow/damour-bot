@@ -11,6 +11,9 @@ welcomeChannel: "general"
 # Channel for goodbye messages. Use null to disable goodbye messages.
 goodbyeChannel: "general"
 
+# Channel for ban messages. Use null to disable ban messages.
+banChannel: "general"
+
 # Role to assign new guild members. Use null to assign no role.
 joinRole: "member"
 
