@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const helpers = require('./helpers.js');
+const wikiFact = require('./wiki-fact.js');
 const welcomes = require('./messages/welcomes.js');
 const goodbyes = require('./messages/goodbyes.js');
 const banMessages = require('./messages/bans.js');
@@ -85,6 +86,19 @@ commands.add({'name': 'goodbye'}, (message) => {
 
 commands.add({'name': 'ban'}, (message) => {
     sendBanMessage(message.channel, message.author);
+});
+
+commands.add({'name': 'fact'}, (message, month, day) => {
+    wikiFact.fact((err, fact) => {
+        if (err) {
+            return helpers.send(message.channel, err.message);
+        }
+
+        const embed = new Discord.RichEmbed();
+        embed.setTitle(`Fact about ${fact.date}`);
+        embed.setDescription(fact.fact);
+        helpers.send(message.channel, {embed});
+    }, month, day);
 });
 
 if (config.colorPrefix) {
