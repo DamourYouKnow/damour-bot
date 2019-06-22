@@ -47,7 +47,8 @@ module.exports.fact = function(callback, month, day) {
 
         try {
             const $ = cheerio.load(body);
-            const eventList = $('#Events').parent().next().find('li').toArray();
+            const eventList = $('#Events').parent().nextUntil('h2')
+                .filter('ul').find('li').toArray();
             const fact = {
                 'date': `${months[date.getMonth()]} ${date.getDate()}`,
                 'fact': $(choice(eventList)).text()
