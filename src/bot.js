@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const fs = require('fs');
+const path = require('path');
 const helpers = require('./helpers.js');
 const wikiFact = require('./wiki-fact.js');
 const welcomes = require('./messages/welcomes.js');
@@ -7,7 +8,9 @@ const goodbyes = require('./messages/goodbyes.js');
 const banMessages = require('./messages/bans.js');
 const yaml = require('js-yaml');
 
-const config = yaml.safeLoad(fs.readFileSync('config.yml'));
+const config = yaml.safeLoad(
+    fs.readFileSync(path.resolve(__dirname, '../config.yml'))
+);
 
 // eslint-disable-next-line no-extend-native
 String.prototype.replaceAll = function(search, replacement) {
