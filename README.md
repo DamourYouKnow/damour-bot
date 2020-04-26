@@ -5,7 +5,7 @@ Provides custom server join/leave messages for Discord and some other stuff.
 ## Usage
 
 This thing runs on Node.js. You just need to do the `npm install` thing 
-and then you can run it with `node app.js`.
+and then you can run it with `npm start`.
 
 For authenticating your application you can either specify the `token` property 
 in `config.yml` or you can consume the `DISCORD_API_TOKEN` environment 
