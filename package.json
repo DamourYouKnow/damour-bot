@@ -20,10 +20,10 @@
   },
   "homepage": "https://github.com/DamourYouKnow/damour-bot#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.6.4",
-    "js-yaml": "^3.13.1",
-    "request": "^2.88.2"
+    "js-yaml": "^3.13.1"
   },
   "devDependencies": {
     "eslint": "^5.7.0",

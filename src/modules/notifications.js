@@ -5,28 +5,40 @@ const bans = require('../messages/bans');
 
 const joinTimers = {};
 
-module.exports = function(bot, config) {
+module.exports = function(bot) {
+    bot.commands.add({'name': 'welcome'}, (message) => {
+        sendWelcome(bot, message.channel, message.author);
+    });
+
+    bot.commands.add({'name': 'goodbye'}, (message) => {
+        sendGoodbye(bot, message.channel, message.author);
+    });
+
+    bot.commands.add({'name': 'ban'}, (message) => {
+        sendBanMessage(bot, message.channel, message.author);
+    });
+
     bot.event.memberAdd((member) => {
-        if (config.welcomeChannel) {
-            const channel = findChannel(member.guild, config.welcomeChannel);
-            if (channel) sendWelcome(bot, channel, member.user);
+        if (bot.config.welcomeChannel) {
+            const ch = findChannel(member.guild, bot.config.welcomeChannel);
+            if (ch) sendWelcome(bot, ch, member.user);
         }
     });
 
     bot.event.memberRemove((member) => {
-        if (config.goodbyeChannel) {
-            const channel = findChannel(member.guild, config.welcomeChannel);
+        if (bot.config.goodbyeChannel) {
+            const ch = findChannel(member.guild, bot.config.welcomeChannel);
             const recent = member.user.id in joinTimers;
-            if (channel && (recent || !config.cutoff)) {
-                sendGoodbye(bot, channel, member.user);
+            if (ch && (recent || !bot.config.cutoff)) {
+                sendGoodbye(bot, ch, member.user);
             }
         }
     });
 
     bot.event.memberBan((member) => {
-        if (config.goodbyeChannel) {
-            const channel = findChannel(member.guild, config.welcomeChannel);
-            if (channel) sendBanMessage(bot, channel, member.user);
+        if (bot.config.goodbyeChannel) {
+            const ch = findChannel(member.guild, bot.config.welcomeChannel);
+            if (ch) sendBanMessage(bot, ch, member.user);
         }
     });
 };
@@ -37,7 +49,7 @@ async function sendWelcome(bot, channel, user) {
         title: 'New user!',
         thumbnail: user.avatarURL,
         color: 0x3380ff,
-        description: utils.replaceAll(message, '{user}', user.username)
+        description: utils.replace(message, '{user}', `**${user.username}**`)
     }));
 
     joinTimers[user.id] = new Timer().start();
@@ -53,12 +65,12 @@ async function sendGoodbye(bot, channel, user) {
         ttl = `They departed after ${time}`;
     }
 
-    const message = utils.choice(goodbyes)
+    const message = utils.choice(goodbyes);
     const embedConfig = {
         title: 'User left',
         thumbnail: user.avatarURL,
         color: 0xff9633,
-        description: utils.replaceAll(message, '{user}', user.username)
+        description: utils.replace(message, '{user}', `**${user.username}**`)
     };
     if (ttl) embedConfig.footer = ttl;
 
@@ -71,7 +83,7 @@ async function sendBanMessage(bot, channel, user) {
         title: 'New user!',
         thumbnail: user.avatarURL,
         color: 0xff0000,
-        description: utils.replaceAll(message, '{user}', user.username)
+        description: utils.replace(message, '{user}', `**${user.username}**`)
     }));
 }
 

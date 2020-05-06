@@ -6,6 +6,8 @@ class Bot {
     constructor(config) {
         this.config = config;
         this.client = new Discord.Client();
+        this.commands = new Commands();
+
         this.event = {
             ready: (callback) => {
                 this.client.on('ready', callback);
@@ -16,31 +18,39 @@ class Bot {
             memberRemove: (callback) => {
                 this.client.on('guildMemberRemove', callback);
             },
-            guildBanAdd: (callback) => {
+            memberBan: (callback) => {
                 this.client.on('guildBanAdd', callback);
             },
             message: (callback) => {
                 this.client.on('message', callback);
             }
         };
+
+        this.event.message((message) => {
+            if (message.content.startsWith(this.config.commandPrefix)) {
+                const command = message.content.substring(
+                    config.commandPrefix.length
+                ).split(' ')[0];
+                if (this.commands.exists(command)) {
+                    const args = message.content.split(' ').slice(1);
+                    this.commands.execute(command, message, args);
+                }
+            }
+        });
     }
 
     addModule(module, config) {
         module(this, config);
     }
 
-    addCommand(...commands) {
-        
-    }
-
     embed(config) {
         const embed = new Discord.RichEmbed();
         if (config.title) embed.setTitle(config.title);
         if (config.thumbnail) embed.setThumbnail(config.thumbnail);
-        if (config.title) embed.setTitle(config.title);
-        if (config.color) embed.setTitle(config.color);
-        if (config.description) embed.setTitle(config.description);
+        if (config.color) embed.setColor(config.color);
+        if (config.description) embed.setDescription(config.description);
         if (config.footer) embed.setFooter(config.footer);
+        if (config.url) embed.setURL(config.url);
         return embed;
     }
 
@@ -53,19 +63,23 @@ class Bot {
                 );
                 reject(err);
             } else {
-                this.client('ready', resolve);
+                this.client.on('ready', resolve);
                 this.client.login(token);
             }
         });
     }
 
     async send(channel, content) {
-        await channel.send(content);
+        try {
+            await channel.send(content);
+        } catch (err) {
+            console.error(err);
+        }
     }
 }
 module.exports.Bot = Bot;
 
-class Command {
+class Commands {
     constructor() {
         this.commands = { };
     }
@@ -84,4 +98,3 @@ class Command {
         this.commands[command].apply(null, [message, ...args]);
     }
 }
-module.exports.Command = Command;

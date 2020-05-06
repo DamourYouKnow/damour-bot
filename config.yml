@@ -11,6 +11,9 @@ welcomeChannel: "general"
 # Channel for goodbye messages. Use null to disable goodbye messages.
 goodbyeChannel: "general"
 
+# Use 10 minute cutoff for goodbye messages
+cutoff: true
+
 # Channel for ban messages. Use null to disable ban messages.
 banChannel: "general"
 
