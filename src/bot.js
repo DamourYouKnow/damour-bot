@@ -1,81 +1,30 @@
-const Discord = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const helpers = require('./helpers.js');
 const wikiFact = require('./wiki-fact.js');
-const welcomes = require('./messages/welcomes.js');
-const goodbyes = require('./messages/goodbyes.js');
-const banMessages = require('./messages/bans.js');
 const yaml = require('js-yaml');
+const utils = require('./utils');
+
+const Bot = require('./core').Bot;
+const notifications = require('./modules/notifications');
+const roleAssignment = require('./modules/role-assignment');
+
+async function start() {
+    const config = yaml.safeLoad(
+        await utils.readFile(path.resolve(__dirname, '../config.yml'))
+    );
+    const bot = new Bot(config);
+    bot.addModule(notifications);
+    bot.addModule(roleAssignment);
+    bot.event.ready(() => console.log(`Logged in as ${bot.client.user.tag}`));
+    await bot.login();
+}
+start();
 
 const config = yaml.safeLoad(
     fs.readFileSync(path.resolve(__dirname, '../config.yml'))
 );
 
-// eslint-disable-next-line no-extend-native
-String.prototype.replaceAll = function(search, replacement) {
-    const target = this;
-    return target.split(search).join(replacement);
-};
-
-class Timer {
-    constructor() {
-        this.startTime = null;
-        this.endTime = null;
-    }
-
-    start() {
-        this.startTime = new Date();
-        this.endTime = null;
-        return this;
-    }
-
-    end() {
-        this.endTime = new Date();
-        return this.result();
-    }
-
-    result() {
-        return new Date(this.endTime - this.startTime);
-    }
-}
-
-const client = new Discord.Client();
-const recent = {};
-
-client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}`);
-});
-
-client.on('guildMemberAdd', (member) => {
-    if (config.welcomeChannel) {
-        // Post welcome message.
-        const channel = helpers.findChannel(
-            member.guild, config.welcomeChannel);
-        if (channel) sendWelcome(channel, member.user);
-    }
-
-    if (config.joinRole) {
-        member.addRole(
-            member.guild.roles.find((role) => role.name == config.joinRole));
-    }
-});
-
-client.on('guildMemberRemove', (member) => {
-    if (config.goodbyeChannel) {
-        const channel = helpers.findChannel(
-            member.guild, config.welcomeChannel);
-
-        if (channel) sendGoodbye(channel, member.user, true);
-    }
-});
-
-client.on('guildBanAdd', function(guild, user) {
-    if (config.banChannel) {
-        const channel = helpers.findChannel(guild, config.banChannel);
-        if (channel) sendBanMessage(channel, user);
-    }
-});
 
 const commands = new helpers.Commands();
 
@@ -130,36 +79,6 @@ function sendWelcome(channel, user) {
     setTimeout(() => {
         delete recent[user.id];
     }, 1000 * 60 * 10);
-}
-
-function sendGoodbye(channel, user, postTime) {
-    const username = user.username;
-    const embed = new Discord.RichEmbed();
-    embed.setTitle('User left');
-    embed.setThumbnail(user.avatarURL);
-    embed.setColor(0xff9633);
-    embed.setDescription(
-        choice(goodbyes).replaceAll('{user}', `**${username}**`));
-
-    let ttl;
-    if (user.id in recent) {
-        const time = timeStr(recent[user.id].end());
-        ttl = `They departed after ${time}`;
-    }
-    if (ttl && postTime) embed.setFooter(ttl);
-
-    helpers.send(channel, {embed});
-}
-
-function sendBanMessage(channel, user) {
-    const username = user.username;
-    const embed = new Discord.RichEmbed();
-    embed.setTitle('User was banned from the server.');
-    embed.setThumbnail(user.avatarURL);
-    embed.setColor(0x3380ff);
-    embed.setDescription(
-        choice(banMessages).replaceAll('{user}', `**${username}**`));
-    helpers.send(channel, {embed});
 }
 
 function cmdColor(message, newColor) {
