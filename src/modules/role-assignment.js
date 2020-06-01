@@ -13,7 +13,7 @@ module.exports = function(bot) {
     bot.event.memberAdd((member) => {
         if (bot.config.joinRole) {
             const role = member.guild.roles.find((role) => {
-                role.name == bot.config.joinRole;
+                return role.name == bot.config.joinRole;
             });
             if (role) member.addRole(role);
         }
