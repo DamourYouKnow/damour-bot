@@ -2,6 +2,8 @@
 # If null, the "token" property of auth.json will be used.
 token: null
 
+server: "230129683591725057"
+
 # Command prefix
 commandPrefix: "!"
 
@@ -22,3 +24,9 @@ joinRole: "member"
 
 # Prefix to designate color roles. Use null to disable the colors feature.
 colorPrefix: "color."
+
+leaderboardChannel: "Bathroom"
+
+leaderboardTextChannel: "voice-text"
+
+leaderboardCommand:  "leaderboard"

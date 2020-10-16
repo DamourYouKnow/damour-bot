@@ -23,6 +23,9 @@ class Bot {
             },
             message: (callback) => {
                 this.client.on('message', callback);
+            },
+            voiceStateUpdate: (callback) => {
+                this.client.on('voiceStateUpdate', callback);
             }
         };
 

@@ -6,6 +6,7 @@ const Bot = require('./core').Bot;
 const notifications = require('./modules/notifications');
 const roleAssignment = require('./modules/role-assignment');
 const facts = require('./modules/facts');
+const leaderboard = require('./modules/leaderboard');
 
 (async function start() {
     const config = yaml.safeLoad(
@@ -15,6 +16,7 @@ const facts = require('./modules/facts');
     bot.addModule(notifications);
     bot.addModule(roleAssignment);
     bot.addModule(facts);
+    bot.addModule(leaderboard);
     bot.event.ready(() => console.log(`Logged in as ${bot.client.user.tag}`));
     await bot.login();
 })();
