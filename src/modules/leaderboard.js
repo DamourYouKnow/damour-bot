@@ -63,7 +63,7 @@ module.exports = function(bot) {
                 'name': newState.user.username,
                 'time': Number(timer.result())
             });
-            leaderboard.sort((a, b) => a - b);
+            leaderboard.sort((a, b) => b.time - a.time);
             leaderboard = leaderboard.slice(0, 20);
             utils.writeFile(filePath, JSON.stringify(leaderboard));
 
